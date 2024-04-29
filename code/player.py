@@ -1,3 +1,8 @@
+import pygame as pg
+
+class Player:
+    def __int__(self):
+        self.img = pg.image.load("").convert_alpha()
 import pygame
 from pygame.math import Vector2
 
