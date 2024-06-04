@@ -3,7 +3,7 @@ from pygame.math import Vector2
 
 class Player:
     def __init__(self, x, y):
-        self.img = pg.image.load("assets/Player.png")
+        self.img = pg.transform.scale(pg.image.load("assets/player.png"), (100, 100))
         self.pos = Vector2(x, y)
         self.neupos = Vector2(0, 0)
         self.speed = 5

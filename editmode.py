@@ -21,10 +21,6 @@ class EditMode:
     def selection(self):
         if self.selector:
             self.handle_event()
-            """for event in pg.event.get():
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_e:
-                        self.selector = not self.selector"""
 
     def draw(self):
         for rect_pos in self.placed_rects:

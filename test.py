@@ -1,50 +1,55 @@
 import pygame
-from pygame.math import Vector2
+from player import  Player
+from pygame.locals import *
 
 
-class Player:
-    def __init__(self, x, y):
-        self.pos = Vector2(x, y)
-        self.speed = 5
+class Camera:
+    def __init__(self, player):
+        self.player = player
+        self.window_size = pygame.display.get_window_size()
+        self.scroll = pygame.Vector2(0, 0)
 
-    def move(self, keys):
-        direction = Vector2(0, 0)
-        if keys[pygame.K_a]:
-            direction.x = -1
-        if keys[pygame.K_d]:
-            direction.x = 1
-        if keys[pygame.K_w]:
-            direction.y = -1
-        if keys[pygame.K_s]:
-            direction.y = 1
+    def update(self):
+        # Smooth camera follow
+        self.scroll.x += (self.player.pos.x - self.scroll.x - (
+                    self.window_size[0] / 2) + self.player.img.get_width() / 2) / 20
+        self.scroll.y += (self.player.pos.y - self.scroll.y - (
+                    self.window_size[1] / 2) + self.player.img.get_height() / 2) / 20
 
-        if direction.length() > 0:
-            direction.normalize_ip()
-            self.pos += direction * self.speed
+    def apply(self, entity):
+        return entity.pos - self.scroll
 
     def draw(self, screen):
-        pygame.draw.circle(screen, (0, 0, 255), (int(self.pos.x), int(self.pos.y)), 20)
+        player_pos = self.apply(self.player)
+        screen.blit(self.player.img, player_pos)
 
-    def
 
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
-clock = pygame.time.Clock()
+# Main game loop example
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    clock = pygame.time.Clock()
 
-player = Player(400, 300)
+    player = Player(400, 300)
+    camera = Camera(player)
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                running = False
 
-    keys = pygame.key.get_pressed()
-    player.move(keys)
+        screen.fill((0, 0, 0))
 
-    screen.fill((255, 255, 255))
-    player.draw(screen)
-    pygame.display.flip()
-    clock.tick(60)
+        player.update(screen)
+        camera.update()
+        camera.draw(screen)
 
-pygame.quit()
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main()
