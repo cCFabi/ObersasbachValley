@@ -494,7 +494,7 @@ def draw_restricted_areas(surface):
         pygame.draw.rect(surface, (255, 0, 0), area, 2)
 
 
-def save_game(character, fields, crops):
+def save_game(character, fields, crops, field_cost):
     game_state = {
         'character': {
             'x': character.rect.x,
@@ -509,7 +509,8 @@ def save_game(character, fields, crops):
             'crop_type': crop.crop_type,
             'growth_stage': crop.growth_stage,
             'growth_timer': crop.growth_timer
-        } for crop in crops]
+        } for crop in crops],
+        'field_cost': field_cost  # Save the current field cost
     }
     filename = 'savegame.json'
     with open(filename, 'w') as file:
@@ -586,7 +587,7 @@ def main():
             if selected_option == "Resume":
                 in_menu = False
             elif selected_option == "Save":
-                save_game(character, fields, crops)
+                save_game(character, fields, crops, field_cost)  # Save the current state including field cost
                 in_menu = False
             elif selected_option == "Load":
                 game_state = load_game()
@@ -600,6 +601,7 @@ def main():
                     for crop, state in zip(crops, game_state['crops']):
                         crop.growth_stage = state['growth_stage']
                         crop.growth_timer = state['growth_timer']
+                    field_cost = game_state.get('field_cost', initial_field_cost)  # Load the saved field cost
                 in_menu = False
             elif selected_option == "Quit":
                 pygame.quit()
