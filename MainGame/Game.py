@@ -246,7 +246,7 @@ class Character:
             self.currency -= cost
             self.add_to_inventory(item)
             self.add_message(f"Bought {item} for {cost} currency")
-            handle_key_debounce()
+            pygame.time.wait(200)
         else:
             self.add_message(f"Not enough currency to buy {item}.")
 
@@ -283,14 +283,6 @@ def create_initial_field(grid_size=32):
 
 
 class Crop:
-    growth_rates = {
-        'Wheat': 30,
-        'Corn': 40,
-        'Tomato': 50
-    }
-
-    max_growth = 5
-
     def __init__(self, x, y, crop_type):
         self.image = None  # funktioniert vielleicht nicht
         self.crop_type = crop_type
@@ -298,6 +290,14 @@ class Crop:
         self.growth_timer = 0
         self.rect = pygame.Rect(x, y, 32, 32)
         self.set_image()
+
+    growth_rates = {
+        'Wheat': 30,
+        'Corn': 40,
+        'Tomato': 50
+    }
+
+    max_growth = 5
 
     def set_image(self):
         if self.growth_stage < len(crop_images[self.crop_type]):
@@ -345,10 +345,10 @@ class Menu:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             self.selected = (self.selected - 1) % len(self.options)
-            pygame.time.wait(150)
+            pygame.time.wait(200)
         if keys[pygame.K_DOWN]:
             self.selected = (self.selected + 1) % len(self.options)
-            pygame.time.wait(150)
+            pygame.time.wait(200)
         if keys[pygame.K_RETURN]:
             return self.options[self.selected]
         return None
@@ -378,10 +378,10 @@ class CropSelector:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_UP]:
                 self.selected = (self.selected - 1) % len(self.crops)
-                pygame.time.wait(150)
+                pygame.time.wait(200)
             if keys[pygame.K_DOWN]:
                 self.selected = (self.selected + 1) % len(self.crops)
-                pygame.time.wait(150)
+                pygame.time.wait(200)
             if keys[pygame.K_RETURN]:
                 if self.target_field:
 
@@ -441,10 +441,10 @@ class Shop:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_UP]:
                 self.selected = (self.selected - 1) % len(self.items)
-                pygame.time.wait(150)
+                pygame.time.wait(200)
             if keys[pygame.K_DOWN]:
                 self.selected = (self.selected + 1) % len(self.items)
-                pygame.time.wait(150)
+                pygame.time.wait(200)
             if keys[pygame.K_RETURN]:
                 item = self.items[self.selected]
                 character.buy_item(item, shop_items[item])
@@ -482,10 +482,6 @@ def add_field(fields, mouse_x, mouse_y, character, field_cost):
 
         else:
             print("Not enough currency to place field.")
-
-
-def handle_key_debounce():
-    pygame.time.wait(200)
 
 
 def draw_debug_grid(surface):
@@ -577,17 +573,17 @@ def main():
         if keys[pygame.K_ESCAPE]:
             if crop_selector.active:
                 crop_selector.active = False
-                handle_key_debounce()
+                pygame.time.wait(200)
             elif shop.active:
                 shop.active = False
-                handle_key_debounce()
+                pygame.time.wait(200)
             elif not (crop_selector.active or shop.active or in_menu):
                 in_menu = True
         if keys[pygame.K_b] and not crop_selector.active and not shop.active and not in_menu:
             shop.active = True
         if keys[pygame.K_e] and not crop_selector.active and not shop.active and not in_menu:
             building_mode = not building_mode
-            handle_key_debounce()
+            pygame.time.wait(200)
 
         if in_menu:
             selected_option = menu.handle_keys()
